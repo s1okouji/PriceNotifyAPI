@@ -1,4 +1,4 @@
-package entity
+package model
 
 import (
 	"gorm.io/gorm"
@@ -6,7 +6,6 @@ import (
 
 type Channel struct {
 	gorm.Model
-	id    int
+	id    string
 	_type int
-	users []string
 }

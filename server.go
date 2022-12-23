@@ -1,21 +1,14 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
+	"github.com/s1okouji/price_notify_api/controller"
+	"github.com/s1okouji/price_notify_api/service"
 )
 
 func main() {
+	service.SetUp()
 	e := echo.New()
-	e.POST("/apps", setApp)
+	e.POST("/apps", controller.SetApp)
 	e.Logger.Fatal(e.Start(":1323"))
-}
-
-func setApp(c echo.Context) error {
-
-	app := c.FormValue("app_id")
-	user := c.FormValue("user_id")
-
-	return c.String(http.StatusOK, "appId:"+app+", userId:"+user)
 }
