@@ -9,6 +9,8 @@ import (
 func main() {
 	service.SetUp()
 	e := echo.New()
+	e.GET("/apps", controller.GetApps)
 	e.POST("/apps", controller.SetApp)
+	e.DELETE("/apps", controller.DeleteApp)
 	e.Logger.Fatal(e.Start(":1323"))
 }

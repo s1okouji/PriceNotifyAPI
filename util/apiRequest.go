@@ -23,7 +23,7 @@ type appdetails struct {
 }
 
 func GetGameModel(appId int) model.Game {
-	resp, err := http.Get("https://store.steampowered.com/api/appdetails?appids=" + strconv.Itoa(appId))
+	resp, err := http.Get("https://store.steampowered.com/api/appdetails?currency=JP&appids=" + strconv.Itoa(appId))
 	if err != nil {
 		log.Fatal("cannot get price")
 	}

@@ -10,7 +10,7 @@ var DB *gorm.DB
 
 func SetUp() {
 	var err error
-	dsn := "root:price_bot@tcp(127.0.0.1:3306)/price_notify"
+	dsn := "root:price_notify@tcp(127.0.0.1:3306)/price_notify?parseTime=true"
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")

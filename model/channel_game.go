@@ -1,9 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type Channel_Game struct {
-	gorm.Model
+	Id        int `gorm:"primaryKey"`
 	AppId     int
 	ChannelId string
 }

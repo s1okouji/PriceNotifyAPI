@@ -2,6 +2,7 @@ package mapper
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/s1okouji/price_notify_api/entity"
@@ -10,7 +11,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetGames(gamesEntity []entity.Game, db *gorm.DB) {
+func GetGames(db *gorm.DB) []entity.Game {
+	var gamesEntity []entity.Game
 	var gamesModel []model.Game
 	result := db.Find(&gamesModel)
 	if result.Error != nil {
@@ -27,6 +29,8 @@ func GetGames(gamesEntity []entity.Game, db *gorm.DB) {
 			History:         nil,
 		})
 	}
+
+	return gamesEntity
 }
 
 // Entityからデータベースへアクセスする
@@ -45,10 +49,37 @@ func CreateGame(appId int, channelId string, db *gorm.DB) {
 				Day:             time.Now().Format("20060102"),
 			})
 		} else {
-			panic("Database error on CreateGames")
+			panic("Database error on CreateGame")
 		}
 	}
-	db.Create(&model.Channel_Game{
+
+	var channel_gameModel model.Channel_Game
+	err = db.Where("app_id=? AND channel_id=?", appId, channelId).First(&channel_gameModel).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			db.Create(&model.Channel_Game{
+				AppId:     appId,
+				ChannelId: channelId,
+			})
+		}
+	} else {
+		fmt.Println("Already Exists!")
+	}
+}
+
+func DeleteGame(appId int, channelId string, db *gorm.DB) {
+	var channel_gameModel model.Channel_Game
+	err := db.Where("app_id=? AND channel_id=?", appId, channelId).First(&channel_gameModel).Error
+	if err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			panic("Database error on DeleteGame")
+		} else {
+			return
+		}
+	}
+
+	db.Delete(&model.Channel_Game{
+		Id:        channel_gameModel.Id,
 		AppId:     appId,
 		ChannelId: channelId,
 	})
