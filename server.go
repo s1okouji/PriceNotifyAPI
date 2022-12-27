@@ -12,5 +12,5 @@ func main() {
 	e.GET("/apps", controller.GetApps)
 	e.POST("/apps", controller.SetApp)
 	e.DELETE("/apps", controller.DeleteApp)
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(":8000"))
 }
