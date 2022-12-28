@@ -48,6 +48,6 @@ jobs:
         with:
           key: ${{ secrets.SSH_KEY }}
           name: id_rsa
-          known_hosts: ${{ secret.KNOWN_HOSTS }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: Deploy
         run: rsync -acvz --delete ./bin ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/bin
