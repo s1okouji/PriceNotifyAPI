@@ -43,5 +43,11 @@ jobs:
           name: server_${{ github.sha }}
           path: bin
         
-      - name: Deploy      
-        run: echo ${{ secrets.SSH_SECRET }} > key && rsync -ahv --progress -e "ssh -i key"  ./bin ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/bin
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v1
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_rsa
+          known_hosts: ${{ secret.KNOWN_HOSTS }}
+      - name: Deploy
+        run: rsync -acvz --delete ./bin ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/bin
