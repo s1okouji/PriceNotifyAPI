@@ -27,5 +27,21 @@ jobs:
     - name: Test
       run: go test -v ./...
     
-    - name: Deploy
-      run: echo ${{ secrets.SSH_SECRET }} > key && rsync -ahv --progress -e "ssh -i key"  ./bin ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/bin
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        name: server_${{ github.sha }}
+        path: bin
+      
+  deploy:
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+      - name: Download
+        uses: actions/download-artifact@v3
+        with:
+          name: server_${{ github.sha }}
+          path: bin
+        
+      - name: Deploy      
+        run: echo ${{ secrets.SSH_SECRET }} > key && rsync -ahv --progress -e "ssh -i key"  ./bin ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/bin
