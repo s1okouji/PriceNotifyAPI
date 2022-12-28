@@ -26,6 +26,3 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-    
-    - name: Deploy
-      run: echo ${{ secrets.SSH_SECRET }} > key && rsync -ahv --progress -e "ssh -i key"  ./bin ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/bin
