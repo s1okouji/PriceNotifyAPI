@@ -1,0 +1,31 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: Build
+      run: mkdir deb && go build server.go -o ./deb      
+
+    - name: Test
+      run: go test -v ./...
+    
+    - name: Deploy
+      run: echo ${{ secrets.SSH_SECRET }} > key && rsync -ahv --progress -e "ssh -i key"  ./deb ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/deb
