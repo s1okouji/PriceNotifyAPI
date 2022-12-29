@@ -42,12 +42,13 @@ jobs:
         with:
           name: server_${{ github.sha }}
           path: bin
-        
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v1
+      - name: deploy
+        uses: burnett01/rsync-deployments@5.2.1
         with:
-          key: ${{ secrets.SSH_KEY }}
-          name: id_rsa
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      - name: Deploy
-        run: rsync -acvz --delete ./bin ${{ secrets.USERNAME }}@${{ secrets.HOSTNAME }}:/home/${{ secrets.USERNAME }}/bin
+          switches: -avzr --delete
+          path: bin/
+          remote_path: /opt/price_notify_api/
+          remote_user: ${{ secrets.USERNAME }}
+          remote_host: ${{ secrets.HOSTNAME }}
+          remote_key: ${{ secrets.SSH_SECRET }}
+          remote_key_pass: ${{ secrets.SSH_PASS }}
