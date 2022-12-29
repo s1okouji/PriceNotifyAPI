@@ -41,7 +41,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: server_${{ github.sha }}
-          path: bin
+          path: bin/
       - name: deploy
         uses: burnett01/rsync-deployments@5.2.1
         with:
