@@ -22,7 +22,7 @@ jobs:
         go-version: 1.19
 
     - name: Build
-      run: mkdir deb && go build -o ./bin server.go
+      run: mkdir bin && cd bin && go build ../server.go && cd ..
 
     - name: Test
       run: go test -v ./...
