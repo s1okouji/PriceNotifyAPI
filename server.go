@@ -16,5 +16,6 @@ func main() {
 	e.GET("/apps", controller.GetApps)
 	e.POST("/apps", controller.SetApp)
 	e.DELETE("/apps", controller.DeleteApp)
+	e.POST("/interactions", controller.PostInteractions)
 	e.Logger.Fatal(e.StartAutoTLS(":443"))
 }
