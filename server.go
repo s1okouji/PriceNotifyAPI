@@ -11,11 +11,21 @@ import (
 func main() {
 	service.SetUp()
 	e := echo.New()
-	e.AutoTLSManager.Cache = autocert.DirCache("/var/api/.cache")
-	e.Pre(middleware.HTTPSRedirect())
+
 	e.GET("/apps", controller.GetApps)
 	e.POST("/apps", controller.SetApp)
 	e.DELETE("/apps", controller.DeleteApp)
 	e.POST("/interactions", controller.PostInteractions)
+	// startHttp(e)
+	startHttps(e)
+}
+
+func startHttps(e *echo.Echo) {
+	e.AutoTLSManager.Cache = autocert.DirCache("/var/api/.cache")
+	e.Pre(middleware.HTTPSRedirect())
 	e.Logger.Fatal(e.StartAutoTLS(":443"))
+}
+
+func startHttp(e *echo.Echo) {
+	e.Logger.Fatal(e.Start(":8000"))
 }
