@@ -3,6 +3,7 @@ package controller
 import (
 	"crypto/ed25519"
 	"encoding/hex"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -23,6 +24,6 @@ func PostInteractions(c echo.Context) error {
 	if !isVerified {
 		return c.String(http.StatusUnauthorized, "invalid request signature")
 	}
-
-	return c.String(http.StatusOK, string(body))
+	fmt.Println(string(body))
+	return c.String(http.StatusOK, "OK")
 }
