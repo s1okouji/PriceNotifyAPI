@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - develop
-      - main
     types: [closed]
 
 jobs:
@@ -23,7 +22,7 @@ jobs:
         go-version: 1.19
 
     - name: Build
-      run: mkdir bin && cd bin && go build ../server.go && cd ..
+      run: mkdir bin && cd bin && go build ../*.go && cd ..
 
     - name: Test
       run: go test -v ./...
@@ -31,7 +30,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v3
       with:
-        name: server_${{ github.sha }}
+        name: client_${{ github.sha }}
         path: bin
       
   deploy:
@@ -41,7 +40,7 @@ jobs:
       - name: Download
         uses: actions/download-artifact@v3
         with:
-          name: server_${{ github.sha }}
+          name: client_${{ github.sha }}
           path: bin/
       - name: deploy
         uses: burnett01/rsync-deployments@5.2.1
