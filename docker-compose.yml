@@ -1,0 +1,12 @@
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: price_notify
+      MYSQL_DATABASE: price_notify
+      MYSQL_PORT: 3306
+      TZ: 'Asia/Tokyo'
+    ports:
+      - 3306:3306
+    
