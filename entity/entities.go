@@ -17,9 +17,10 @@ type History struct {
 }
 
 type Channel struct {
-	ChannelId int
+	ChannelId string
 	Type      int
 	Users     []string
+	AppIds    []int
 }
 
 type Admin struct {

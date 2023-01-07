@@ -3,11 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
+	"github.com/s1okouji/pnabot_client/dto"
 	"github.com/s1okouji/pnabot_client/service"
 	"github.com/s1okouji/pnabot_client/util"
 	"golang.org/x/net/websocket"
@@ -25,7 +29,7 @@ var bot_token string
 func main() {
 	service.SetUp()
 	start_url = "gateway.discord.gg/?v=10&encoding=json"
-	// bot_token = os.Getenv("bot_token")
+	bot_token = os.Getenv("bot_token")
 	ws, interval = Connect(start_url)
 	defer ws.Close()
 	props := &map[string]string{"os": "linux", "browser": "my_app", "device": "my_app"}
@@ -39,7 +43,10 @@ func main() {
 	SendIdentifiy(bot_token, props, intent)
 	go route(sync, quit)
 	go loggingError()
-	util.RegularRequest(func() { service.UpdateGames() })
+	util.RegularRequest(func() {
+		service.UpdateGames()
+		Notify()
+	})
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	fmt.Println("Bye!")
@@ -169,4 +176,45 @@ func route(sync chan<- string, quit <-chan os.Signal) {
 			err = nil
 		}
 	}
+}
+
+func Notify() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Printf("failed to send messages")
+		}
+	}()
+	d := *service.GetChannelsWithDiscountedGames()
+	for _, v := range d {
+		SendGamesList(v.ChannelId, &v.Games)
+	}
+}
+
+func SendGamesList(channel_id string, games *[]dto.GetAppDTO) error {
+	var content strings.Builder
+	for _, v := range *games {
+		content.WriteString(v.String())
+	}
+
+	url := fmt.Sprintf("https://discord.com/api/v%v/channels/%v/messages", 10, channel_id)
+	fmt.Printf(`{"content": "%v","tts": false}`, content.String())
+	request, err := http.NewRequest("POST", url, strings.NewReader(fmt.Sprintf(`{"content": "%v","tts": false}`, content.String())))
+	if err != nil {
+		return fmt.Errorf("http new request error")
+	}
+	request.Header.Add("Authorization", fmt.Sprintf("Bot %v", bot_token))
+	request.Header.Add("Content-Type", "application/json")
+	var resp *http.Response
+	resp, err = http.DefaultClient.Do(request)
+	if err != nil {
+		return fmt.Errorf("send messages error")
+	}
+	var body []byte
+	body, err = io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+	if err != nil {
+		return fmt.Errorf("send messages error")
+	}
+
+	return nil
 }

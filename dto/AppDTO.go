@@ -1,6 +1,8 @@
 package dto
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type CreateAppDTO struct {
 	AppId     int
@@ -18,6 +20,11 @@ type GetAppDTO struct {
 	BasePrice       int    `json:"base_price"`
 	FinalPrice      int    `json:"final_price"`
 	DiscountPercent int    `json:"discount_percent"`
+}
+
+type NotifyDTO struct {
+	ChannelId string
+	Games     []GetAppDTO
 }
 
 func (dto *GetAppDTO) String() string {
