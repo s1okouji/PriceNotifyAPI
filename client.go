@@ -32,8 +32,8 @@ func main() {
 	bot_token = os.Getenv("bot_token")
 	ws, interval = Connect(start_url)
 	defer ws.Close()
-	// props := &map[string]string{"os": "linux", "browser": "my_app", "device": "my_app"}
-	props := &map[string]string{"os": "windows", "browser": "my_app", "device": "my_app"}
+	props := &map[string]string{"os": "linux", "browser": "my_app", "device": "my_app"}
+	// props := &map[string]string{"os": "windows", "browser": "my_app", "device": "my_app"}
 	intent := 1<<15 + 1<<12 + 1<<9
 	quit := make(chan os.Signal, 10)
 	sync := make(chan string)
