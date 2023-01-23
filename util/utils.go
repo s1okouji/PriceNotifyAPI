@@ -26,9 +26,12 @@ func GetData(str string) string {
 }
 
 func RegularRequest(f func()) {
-	y, m, d := time.Now().AddDate(0, 0, 1).Date()
-	date := time.Date(y, m, d, 10, 0, 0, 0, time.UTC)
-	time.AfterFunc(time.Until(date), f)
+	for {
+		y, m, d := time.Now().AddDate(0, 0, 1).Date()
+		date := time.Date(y, m, d, 10, 0, 0, 0, time.UTC)
+		time.Sleep(time.Until(date))
+		f()
+	}
 }
 
 func Convert(games *[]entity.Game) *map[int]entity.Game {
