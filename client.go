@@ -43,7 +43,7 @@ func main() {
 	SendIdentifiy(bot_token, props, intent)
 	go route(sync, quit)
 	go loggingError()
-	util.RegularRequest(func() {
+	go util.RegularRequest(func() {
 		service.UpdateGames()
 		Notify()
 	})
